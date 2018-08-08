@@ -1,9 +1,9 @@
 package wormgame.gui;
 
-import java.awt.Container;
-import java.awt.Dimension;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
+import java.awt.*;
+import javax.swing.*;
+
+import wormgame.Direction;
 import wormgame.game.WormGame;
 
 public class UserInterface implements Runnable {
@@ -11,6 +11,8 @@ public class UserInterface implements Runnable {
     private JFrame frame;
     private WormGame game;
     private int sideLength;
+    private DrawingBoard board;
+    int width, height;
 
     public UserInterface(WormGame game, int sideLength) {
         this.game = game;
@@ -20,8 +22,10 @@ public class UserInterface implements Runnable {
     @Override
     public void run() {
         frame = new JFrame("Worm Game");
-        int width = (game.getWidth() + 1) * sideLength + 10;
-        int height = (game.getHeight() + 2) * sideLength + 10;
+        frame.setLayout(new BorderLayout());
+        width = (game.getWidth() + 1) * sideLength + 10;
+        height = (game.getHeight() + 1) * sideLength + 10;
+
 
         frame.setPreferredSize(new Dimension(width, height));
 
@@ -34,8 +38,27 @@ public class UserInterface implements Runnable {
     }
 
     public void createComponents(Container container) {
-        // Create drawing board first which then is added into container-object.
-        // After this, create keyboard listener which is added into frame-object
+        JLabel score = new JLabel("SCORE: " + game.getScore());
+        //JButton start = new JButton("START");
+        this.board = new DrawingBoard(game, sideLength, score);
+
+        //frame.addKeyListener(new KeyboardListener(game.getWorm()));
+
+
+        container.add(score, BorderLayout.PAGE_START);
+        //container.add(start, BorderLayout.PAGE_END);
+        container.add(board, BorderLayout.CENTER);
+
+        MovingAction movingAction = new MovingAction(board, game.getWorm());
+
+        movingAction.addAction("UP", Direction.UP);
+        movingAction.addAction("DOWN", Direction.DOWN);
+        movingAction.addAction("LEFT", Direction.LEFT);
+        movingAction.addAction("RIGHT", Direction.RIGHT);
+    }
+
+    public Updatable getUpdatable(){
+        return this.board;
     }
 
 

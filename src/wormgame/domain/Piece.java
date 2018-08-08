@@ -1,5 +1,7 @@
 package wormgame.domain;
 
+import java.util.Objects;
+
 public class Piece {
 
     private int x;
@@ -20,7 +22,7 @@ public class Piece {
     }
 
     public boolean runsInto(Piece piece){
-        if (piece.getX() == this.x && piece.getY() == this.y){
+        if (this.equals(piece)){
             return true;
         }
 
@@ -34,4 +36,20 @@ public class Piece {
                 ", " + y +
                 ')';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Piece piece = (Piece) o;
+        return x == piece.x &&
+                y == piece.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+
 }
